@@ -30,6 +30,7 @@ class LinkedList{
         // Función que elemina un elemento determinado de la lista dada una posición determinada.
         void del(int index);
 
+        int getSize();
         void print();
 };
 
@@ -95,19 +96,21 @@ void LinkedList<T>::create(T data, int index){
     if (index > size){
         std::cout << "No hay suficientes elementos para insertar el valor " << data << " en la posicion: " << index << std::endl;
         return;
+    } else if (index < 0){
+        std::cout << "Esa posicion no existe" << std::endl;
+        return;
+    }
+
+    // Si se quiere insertar en la primera posición utilizamos la función que ya tenemos.
+    if (index == 0){
+        addFirst(data);
+        return;
     }
 
     // Variable que insertará en la linked list el valor "data". Una vez se hayan traversado "index" elementos.
     int pivot = 0;
 
     Node<T>* current = head;
-
-    
-    // Si se quiere insertar en la primera posición utilizamos la función que ya tenemos.
-    if (index == 0){
-        addFirst(data);
-        return;
-    }
 
     // Atravesamos la linked list hasta llegar a la posición deseada-1 para ocupar el índice exácto de la lista
     while (pivot < index-1){
@@ -130,9 +133,14 @@ void LinkedList<T>::create(T data, int index){
 template <class T>
 T LinkedList<T>::read(int index){
 
+    if(index > size - 1 || index < 0){
+
+        std::cout << "Esa posicion no existe" << std::endl;
+        return -1;
+    }
+
     // Variable que insertará en la linked list el valor "data". Una vez se hayan traversado "index" elementos.
         int pivot = 0;
-
         Node<T>* current = head;
 
     // Atravesamos la linked list hasta llegar a la posición deseada-1 para ocupar el índice exácto de la lista
@@ -149,9 +157,13 @@ T LinkedList<T>::read(int index){
 template <class T>
 void LinkedList<T>::update(T data, int index){
 
+    if(index > size - 1 || index < 0){
+        std::cout << "Esa posicion no existe" << std::endl;
+        return;
+    }
+
     // Variable que insertará en la linked list el valor "data". Una vez se hayan traversado "index" elementos.
     int pivot = 0;
-
     Node<T>* current = head;
 
     // Atravesamos la linked list hasta llegar a la posición deseada-1 para ocupar el índice exácto de la lista
@@ -168,29 +180,42 @@ void LinkedList<T>::update(T data, int index){
 template <class T>
 void LinkedList<T>::del(int index){
 
+    if(index > size - 1 || index < 0){
+
+        std::cout << "Esa posicion no existe" << std::endl;
+        return;
+    }
+
+    // Si quiere borrar la cabeza
+    if(index == 0){
+
+        delete head;
+
+        // cambiamos la cabeza al siguiente nodo
+        head = head->getNext();
+        return;
+    }
+
     // Variable que insertará en la linked list el valor "data". Una vez se hayan traversado "index" elementos.
     int pivot = 0;
-
     Node<T>* current = head;
+    
+    // Debemos tener referencia del nodo anterior para contectarlo con el ->getNext()->getNext()
+    Node<T>* previousNode;
 
-    // Atravesamos la linked list hasta llegar a la posición deseada-1 para ocupar el elemento anterior al dado.
-    while (pivot < index-1){
+    // Atravesamos la linked list hasta llegar a la posición deseada para ocupar el elemento anterior al dado.
+    while (pivot < index){
         
+        previousNode = current;
         current = current->getNext();
         pivot = pivot + 1;
     }
+
+    previousNode->setNext(current->getNext());
+
     // Liberamos memoria del nodo eliminado
-    delete current->getNext();
-
-    current->setNext(current->getNext()->getNext());
-
-    //current = current->setNext(next);
-
-
-    //current->setNext(current->getNext());
-
-
-
+    delete current;
+    
 }
 
 template <class T>
@@ -204,6 +229,12 @@ void LinkedList<T>::print(){
         current = current->getNext();
     }
     std::cout << "NULL" << std::endl;
+}
+
+template <class T>
+int LinkedList<T>::getSize(){
+
+    return size;
 }
 
 #endif

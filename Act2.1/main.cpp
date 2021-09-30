@@ -11,23 +11,32 @@ int main(void){
         lista.addLast(i);
     }
 
-    // TODO: CORREGIR PRINT FUNCTION. TERMINA APUNTANDO AL FINAL DE LA FUNCIÓN POR ESO NO APARECE LA LISTA
+    cout << "\n\n";
     cout << "lista original\n";
     lista.print();
+    cout << endl;
 
     // Función de insertAt de la linkedList
-    lista.create(50,5);
+    cout << "Insertar numero:\n";
+    lista.create(4000,4);
     lista.print();
+    cout << endl;
 
+
+    cout << "Leer valor de posicion 5: ";
     cout << lista.read(5) << endl;
-    //lista.print();
+    cout << endl;
 
-    lista.update(100,5);
-    //lista.print();
+    cout << "Actualizar valor en posicion 2 por un 500:\n";
+    lista.update(500,2);
+    lista.print();
+    cout << endl;
 
-    lista.del(2);
-    //lista.print();
+    cout << "Borrar valor en posicion 4:\n";
+    lista.del(4);
+    lista.print();
+    cout << endl;
 
-    
+    lista.deleteAll();
 
 }
