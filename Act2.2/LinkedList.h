@@ -112,11 +112,9 @@ void LinkedList<T>::create(T data, int index){
 
     Node<T>* current = head;
 
-    // Atravesamos la linked list hasta llegar a la posición deseada-1 para ocupar el índice exácto de la lista
-    while (pivot < index-1){
-
+    // Atravesamos la linked list hasta llegar a la posición deseada-1 para crear donde queremos el nuevo nodo.
+    for (int i = 0; i < index - 1; i++){
         current = current->getNext();
-        pivot = pivot + 1;
     }
 
     // El nuevo nodo apunta a donde apuntaba el nodo anterior.
@@ -128,17 +126,6 @@ void LinkedList<T>::create(T data, int index){
     // incrementamos el tamaño de la lista
     size = size + 1;
 }
-
-
-
-
-
-
-
-
-
-/* NO SE SI ESTO FUNCIONARÁ*/
-
 
 /* Función que devuelve el dato de un elemento de la lista dada la ubicación de este.*/
 template <class T>
@@ -153,22 +140,11 @@ T LinkedList<T>::read(int index){
         int pivot = 0;
         Node<T>* current = head;
     // Atravesamos la linked list hasta llegar a la posición deseada-1 para ocupar el índice exácto de la lista
-    while (pivot < index){     
+    for (int i = 0; i < index; i++){
         current = current->getNext();
-        pivot = pivot + 1;
     }
     return current->getData();
 }
-
-
-
-
-
-
-
-
-
-
 
 
 template <class T>
@@ -184,10 +160,8 @@ void LinkedList<T>::update(T data, int index){
     Node<T>* current = head;
 
     // Atravesamos la linked list hasta llegar a la posición deseada-1 para ocupar el índice exácto de la lista
-    while (pivot < index){
-        
+   for (int i = 0; i < index; i++){
         current = current->getNext();
-        pivot = pivot + 1;
     }
 
     // Actualizamos el valor del elemento ubicado en la posición "index";
@@ -221,11 +195,10 @@ void LinkedList<T>::del(int index){
     Node<T>* previousNode;
 
     // Atravesamos la linked list hasta llegar a la posición deseada para ocupar el elemento anterior al dado.
-    while (pivot < index){
-        
+
+    for (int i = 0; i < index; i++){
         previousNode = current;
         current = current->getNext();
-        pivot = pivot + 1;
     }
 
     previousNode->setNext(current->getNext());
