@@ -28,7 +28,6 @@ class DoubleLinkedList{
     int getSize();
     void swap(Node<T>* first, Node<T>* second);
     void insertionSort();
-    void bubbleSort(Node<T>* start);
     
 };
 

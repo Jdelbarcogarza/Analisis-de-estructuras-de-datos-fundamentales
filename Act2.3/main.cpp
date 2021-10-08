@@ -55,8 +55,6 @@ int main(){
 
     fillFile(unorderedList, indexin, indexfi);
     
-
-
     unorderedList.deleteAll();
     
     cout << "done\n";
@@ -69,9 +67,7 @@ Función que toma los indices con la busqueda correcta y llenan los datos en el 
 */
 void fillFile(DoubleLinkedList<string> &list, int indiceInicial, int indiceFinal)
 {
-    /*TODO: QUIERO TENER UN ARCHIVO CON TODO SORTEADO SIEMPRE DISPONIBLE
-    Y QUE CUANDO ESTA FUNCIÓN LEA ESE ARCHIVO, ESCRIBA LAS IPS QUE SON EN 
-    OTRO ARCHIVO NUEVO*/
+
     ofstream myfile ("ListaFinal.txt");
     if (myfile.is_open()){
         for(int i = indiceInicial; i <= indiceFinal -1; i++)
