@@ -156,10 +156,9 @@ void LinkedList<T>::update(T data, int index){
     }
 
     // Variable que insertará en la linked list el valor "data". Una vez se hayan traversado "index" elementos.
-    int pivot = 0;
     Node<T>* current = head;
 
-    // Atravesamos la linked list hasta llegar a la posición deseada-1 para ocupar el índice exácto de la lista
+    // Atravesamos la linked list hasta llegar a la posición deseada para ocupar el índice exácto de la lista
    for (int i = 0; i < index; i++){
         current = current->getNext();
     }
