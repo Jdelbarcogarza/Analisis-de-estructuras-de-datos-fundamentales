@@ -331,6 +331,11 @@ void BST::ancestors(int data){
 
     Node *current = root;
 
+    // si el valor a revisar sus ancestros es la raíz, entonces imprimimos mensaje.
+    if (root->getData() == data){
+        std::cout << "Este nodo no tiene ancestros. Es la raiz." << std::endl;
+    }
+
     while(current->getData() != data){
         
         std::cout << current->getData() << " ";
@@ -340,6 +345,8 @@ void BST::ancestors(int data){
         current = (data < current->getData()) ? current->getLeft() : current->getRight();
     
     }
+
+    
 
 }
 
