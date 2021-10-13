@@ -6,7 +6,6 @@ class BST{
         
         Node *root;
 
-
     public:
 
         BST();
@@ -18,6 +17,7 @@ class BST{
         void visit(int order);
         int height();
         void ancestors(int data);
+        int whatlevelamI(int data);
  
 };
 
@@ -43,6 +43,8 @@ void BST::destroy(Node* node){
 
 }
 
+/* Función que indica si existe un valor en el árbol
+Retorna: True/False*/
 bool BST::search(int data){
 
     Node *current = root;
@@ -188,6 +190,29 @@ void BST::remove(int data){
 
 }
 
+/* Función escondida que encuentra la altura de un arbol recursivamente.*/
+int bstHeight(Node* root){
+
+    if (root == nullptr){
+            return 0;
+        }
+
+    int leftHeight = bstHeight(root->getLeft());
+    int rightHeight = bstHeight(root->getRight());
+
+    // sumar 1 al lado que tenga más altura
+    return  leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
+
+}
+
+/* Función que devuelve la altura de un BST*/
+int BST::height(){
+
+    // devolvemos el valor de altura que encontramos con la función.
+    return bstHeight(root);
+    
+}
+
 void preOrder(Node* root){
 
     if (root != nullptr){
@@ -219,21 +244,39 @@ void postOrder(Node* root){
     }
 }
 
+void levelNodes(Node* root, int level , int i){
+
+    // Si ya es el nodo hoja
+    if (root == nullptr){
+        return;
+    }
+
+    // si el nivel en el que estamos es igual al de la iteración
+    if (level == i){
+        std::cout << root->getData() << " ";
+        return;
+    }
+
+    // imprime los nodos de la izquierda. Solo se corre una vez porque la i != level
+    levelNodes(root->getLeft(), level + 1, i);
+    levelNodes(root->getRight(), level + 1, i);
+
+
+}
+
 void byLevel(Node* root){
     
-    std::cout << "PENDIENTE";
-    /*
-    Node* father = root;
+    Node* current = root;
+    Node* father = nullptr;
 
-    if(root != nullptr){
+    // Guardamos la altura del árbol
+    int height = bstHeight(root);
 
-    std::cout << root->getData() << " ";
-    std::cout << root->getLeft()->getData() << " ";
-    std::cout << root->getRight()->getData() <<  " ";
-    
+    for (int i = 0; i < height; i++){
+        levelNodes(root, 0, i);
+        std::cout << std::endl;
     }
-    byLevel(root->getLeft());
-    */
+
 }
 
 /**
@@ -277,33 +320,52 @@ void BST::visit(int order){
 
 }
 
-
-/* Función escondida que encuentra la altura de un arbol recursivamente.*/
-int bstHeight(Node* root){
-
-    if (root == nullptr){
-            return 0;
-        }
-
-    int leftHeight = bstHeight(root->getLeft());
-    int rightHeight = bstHeight(root->getRight());
-
-    // sumar 1 al lado que tenga más altura
-    return  leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
-
-}
-
-
-/* Función que devuelve la altura de un BST*/
-int BST::height(){
-
-    // devolvemos el valor de altura que encontramos con la función.
-    return bstHeight(root);
-    
-}
-
 /* Función que visita los ancestros de un elemento del árbol.*/
 void BST::ancestors(int data){
 
+    // si no se encuentra ese elemento en el árbol no tiene ancestros.
+    if (search(data) == false){
+        std::cout << "Ese elemento no existe en el arbol. No hay ancestros.\n";
+        return;
+    }
+
+    Node *current = root;
+
+    while(current->getData() != data){
+        
+        std::cout << current->getData() << " ";
+
+        // operador ternario-> (CONDICIÓN) ? ( TRUE que haces si es cierto) : ( FALSE que haces si es falso)
+        // el pivote se mueve a la izquierda o a la derecha
+        current = (data < current->getData()) ? current->getLeft() : current->getRight();
+    
+    }
+
+}
+
+/* Función para encontrar en qué nivel se encuentra un elemento del árbol*/
+int BST::whatlevelamI(int data){
+
+    // El nodo raíz se ubica en el nivel 0.
+    int nivel = 0;
+
+    // Si el dato no se encuentra en el árbol
+    if (search(data) == false){
+        return -1;
+    }
+
+    Node *current = root;
+
+    while(current->getData() != data){
+        
+        // operador ternario-> (CONDICIÓN) ? ( TRUE que haces si es cierto) : ( FALSE que haces si es falso)
+        // el pivote se mueve a la izquierda o a la derecha
+        current = (data < current->getData()) ? current->getLeft() : current->getRight();
+
+        nivel = nivel + 1;
+
+    }
+
+    return nivel;
 
 }
