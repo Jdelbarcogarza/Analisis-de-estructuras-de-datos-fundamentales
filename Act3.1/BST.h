@@ -185,6 +185,9 @@ void BST::remove(int data){
     break;
 
     case 2:
+
+        
+
     break;
     }
 
@@ -202,7 +205,6 @@ int bstHeight(Node* root){
 
     // sumar 1 al lado que tenga más altura
     return  leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
-
 }
 
 /* Función que devuelve la altura de un BST*/
@@ -252,6 +254,8 @@ void levelNodes(Node* root, int level , int i){
     }
 
     // si el nivel en el que estamos es igual al de la iteración
+    // solo pasa una vez este if en cada llamada a la función, porque el for de la función
+    // byLevel se encarga de pasarse al siguiente nivel.
     if (level == i){
         std::cout << root->getData() << " ";
         return;
@@ -259,15 +263,13 @@ void levelNodes(Node* root, int level , int i){
 
     // imprime los nodos de la izquierda. Solo se corre una vez porque la i != level
     levelNodes(root->getLeft(), level + 1, i);
+    // imprime los nodos de la derecha. Solo se corre una vez porque la i != level
     levelNodes(root->getRight(), level + 1, i);
 
 
 }
 
 void byLevel(Node* root){
-    
-    Node* current = root;
-    Node* father = nullptr;
 
     // Guardamos la altura del árbol
     int height = bstHeight(root);
@@ -276,7 +278,6 @@ void byLevel(Node* root){
         levelNodes(root, 0, i);
         std::cout << std::endl;
     }
-
 }
 
 /**
@@ -334,6 +335,7 @@ void BST::ancestors(int data){
     // si el valor a revisar sus ancestros es la raíz, entonces imprimimos mensaje.
     if (root->getData() == data){
         std::cout << "Este nodo no tiene ancestros. Es la raiz." << std::endl;
+        return;
     }
 
     while(current->getData() != data){
@@ -345,9 +347,6 @@ void BST::ancestors(int data){
         current = (data < current->getData()) ? current->getLeft() : current->getRight();
     
     }
-
-    
-
 }
 
 /* Función para encontrar en qué nivel se encuentra un elemento del árbol*/
@@ -372,7 +371,5 @@ int BST::whatlevelamI(int data){
         nivel = nivel + 1;
 
     }
-
     return nivel;
-
 }
