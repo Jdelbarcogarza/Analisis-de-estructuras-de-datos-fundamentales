@@ -186,7 +186,7 @@ void BST::remove(int data){
 
     case 2:
 
-        
+    // TODO: REMOVAL OF NODE WITH TWO CHILDREN
 
     break;
     }
