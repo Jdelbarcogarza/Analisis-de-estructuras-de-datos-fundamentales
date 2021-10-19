@@ -1,6 +1,5 @@
 #include <vector>
-#include <float.h>
-#include <cmath>
+
 
 using namespace std;
 
@@ -24,6 +23,22 @@ class priority_queue{
 
 priority_queue::priority_queue(){}
 
+int parent(int i){ return (i - 1) / 2; }
+
+/*Agregue un dato a la fila priorizada*/
+void priority_queue::push(int dato){
+
+    datos.push_back(dato); // Se hace un append a la lista de datos
+    int index = datos.size() - 1;
+
+    while(index > 0 && datos[parent(index)] < datos[index]){
+        // Cambiamos los elementos de posición.
+        swap(datos[index], datos[parent(index)]);
+        
+        index = parent(index); // la POSICIÓN del padre pasa a ser nodo hijo. Es su posicion correcta
+    }
+}
+
 void maxHeapify(vector<int> &datos, int i){
 
     int left = 2 * i + 1;
@@ -44,71 +59,49 @@ void maxHeapify(vector<int> &datos, int i){
         swap(datos[i], datos[largest]);
         maxHeapify(datos, largest);
     }
-
-    
-}
-
-void heapIncreaseKey(vector<int> &datos, int i, int key){
-    if (key < datos[i]){
-        cout << "Error new key is smaller than current key" << endl;
-    }
-
-    datos[i] = key;
-
-    while(i > 0 && datos[floor(i / 2)] < datos[i]){
-        swap(datos[i], datos[floor(i / 2)]);
-        i = datos[floor(i / 2)];
-    }
-
-
-}
-
-
-/*Agregue un dato a la fila priorizada*/
-void priority_queue::push(int dato){
-
-    datos.push_back(dato); // Se hace un append a la lista de datos
-    int heapSize = datos.size() - 1;
-
-    heapIncreaseKey(datos, heapSize, dato);
-
-
-}
-
-int heapExtractMax(vector<int> &datos){
-    if (datos.size() < 0){
-        cout << "Heap underflow" << endl;
-    }
-
-    // El más grande está al inicio.
-    int max = datos[0];
-
-    // el último (menor valor) pasalo al frente para reorganizar todo el árbol y conservar propiedad.
-    datos[0] = datos[datos.size() - 1];
-
-    datos.pop_back(); // ya pasaste el más pequeño al frente. Borra el que está al final
-
-    maxHeapify(datos, 0); // reorganizas el árbol 
-    return max;
-
 }
 
 /*Saca de la fila priorizada el dato que tiene mayor prioridad*/
 void priority_queue::pop(){
     
-    cout << heapExtractMax(datos) << endl;
+    //cout << heapExtractMax(datos) << endl;
+
+    if (size() < 0){
+        cout << "Heap underflow" << endl;
+        return;
+    }
+
+    if (empty() == true){
+        cout << "La lista ya esta vacia" << endl;
+        return;
+    }
+    
+    // El más grande está siempre al inicio.
+    int max = datos[0];
+
+    // el último (menor valor) pasalo al frente para reorganizar todo el árbol y conservar propiedad.
+    datos[0] = datos[datos.size() - 1];
+
+    datos.pop_back(); // ya pasaste el más pequeño al frente. Borra el que está al final que es el mismo valor
+
+    maxHeapify(datos, 0); // reorganizas el árbol 
 }
 
 /*Regresa el valor del dato que esta con mayor prioridad en la fila priorizada.*/
 int priority_queue::top(){
 
-    return datos[datos.size() - 1];
+    if (datos.size() >= 1){
+        return datos[0];
+    } 
+
+    cout << "No hay elementos en la lista" << endl;
+    return -1;
 }
 
 /*Regresa un valor boleando diciendo si la fila priorizada esta vacía o tiene datos.*/
 bool priority_queue::empty(){
 
-    return datos.size() == 0 ? true : false;
+    return (datos.size() == 0) ? true : false;
 }
 
 /*Regresa la cantidad de datos que tiene la fila priorizada*/
@@ -125,10 +118,10 @@ void priority_queue::print(){
         return;
     }
 
-    int i = datos.size() - 1;
-    while(i >= 0){
+    int i = 0;
+    while(i < datos.size()){
         cout << datos[i] << " ";
-        i--;
+        i++;
     }
     cout << endl;
 }
