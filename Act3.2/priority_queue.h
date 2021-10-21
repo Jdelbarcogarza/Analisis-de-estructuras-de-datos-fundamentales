@@ -71,7 +71,7 @@ void priority_queue::pop(){
         return;
     }
 
-    if (empty() == true){
+    if (empty()){
         cout << "La lista ya esta vacia" << endl;
         return;
     }
@@ -90,7 +90,7 @@ void priority_queue::pop(){
 /*Regresa el valor del dato que esta con mayor prioridad en la fila priorizada.*/
 int priority_queue::top(){
 
-    if (datos.size() >= 1){
+    if (!empty()){
         return datos[0];
     } 
 
@@ -101,7 +101,7 @@ int priority_queue::top(){
 /*Regresa un valor boleando diciendo si la fila priorizada esta vacía o tiene datos.*/
 bool priority_queue::empty(){
 
-    return (datos.size() == 0) ? true : false;
+    return datos.empty();
 }
 
 /*Regresa la cantidad de datos que tiene la fila priorizada*/
