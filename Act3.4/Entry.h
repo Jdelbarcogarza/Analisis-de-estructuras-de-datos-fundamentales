@@ -10,7 +10,7 @@ class Entry{
     public:
 
         Entry(std::string IP){
-            this->numAccesos = 0;
+            this->numAccesos = 1;
             this->IP = IP;
         }
         
