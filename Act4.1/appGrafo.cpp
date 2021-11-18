@@ -31,9 +31,6 @@ int main(void){
     loadGraph(adjList, nodeAmount, edgeAmount, filename);
     
     printList(adjList, nodeAmount);
-
-    //cout <<"here: " << adjList[0].size();
-
     
     cout << "BFS: ";
     BFS(adjList, rootNode);
@@ -48,9 +45,6 @@ int main(void){
     DFS(adjList, rootNode); 
     
 }
-// Para DFS
-// in1: 1 2 4 5 3
-// in2: 1 3 5 6 7 8 9 10 4 2
 
 void DFSVisit(vector<vector<Node<int>>> &adjList, vector<Node<int>>&adjNodes){
 
@@ -73,12 +67,7 @@ void DFSVisit(vector<vector<Node<int>>> &adjList, vector<Node<int>>&adjNodes){
         } 
     }
 
-    return;
-    // pasas la lista de vecinos del nodo siguiente, no los nodos vecinos del actual nodo
-    // esto ni se está corriendo creo
-    DFSVisit(adjList, adjList[adjNodes[0].getDestination()]);
-    
-    timeCounter = timeCounter + 1;
+    return; 
 }
 
 void DFS(vector<vector<Node<int>>> &adjList, int rootNode){
@@ -137,8 +126,6 @@ void BFS(vector<vector<Node<int>>> &adjList, int rootNode){
     // el nodo inicial lo marcas como visitado
     visited[rootNode] = true;
 
-    // OJO: EL LOOP PODRÍA SER SIZE() - 1 PORQUE NO ESTAMOS CONTANDO EL CERO PERO SÍ ESTÁ AHÍ. CUIDADO
-
     while(!gray.empty()){
 
         currentNode = gray.front();
@@ -164,7 +151,7 @@ void BFS(vector<vector<Node<int>>> &adjList, int rootNode){
             gray.push(adjList[currentNode][adjNode].getDestination());
 
         }
-            cout << " ";   
+        cout << " ";   
     }
     cout << endl;
 }
@@ -208,9 +195,6 @@ void printList(vector<vector<Node<int>>> &adjList, int nodeAmount){
         for (unsigned int j = 0; j < adjList[i].size(); j++){
             cout << adjList[i][j].getDestination() << "|" << adjList[i][j].getWeight() << "--> ";
         }
-
         cout << "END" << endl;
-
     }
-
 }
