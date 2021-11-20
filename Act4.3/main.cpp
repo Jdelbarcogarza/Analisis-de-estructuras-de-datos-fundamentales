@@ -1,200 +1,244 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <fstream>
+#include <string>
 #include "Node.h"
 using namespace std;
 
-int timeCounter;
-vector<bool> dfsVisited;
+string obtenerIpOrigen(string s);
+string obtenerIpDestino(string s);
+int busqBinaria(vector<vector<Node>> &adjList, int min, int max, int num);
 
-void BFS(vector<vector<Node<int>>> &adjList, int rootNode);
-void DFS(vector<vector<Node<int>>> &adjList, int rootNode);
-void DFSVisit(vector<vector<Node<int>>> &adjList, vector<Node<int>>&adjNodes);
-void loadGraph(vector<vector<Node<int>>> &adjList, int nodeAmount, int edgeAmount, string filename);
-void printList(vector<vector<Node<int>>> &adjList, int nodeAmount);
+void loadGraph(vector<vector<Node>> &adjList, int nodeAmount, int edgeAmount, string filename);
+void printList(vector<vector<Node>> &adjList, int nodeAmount);
+int conseguirPeso(string s);
+void insertSearch(vector<vector<Node>> &adjList, string origen, string destino);
+void imprimirAdjList(vector<vector<Node>> &adjList);
+void nodeGrades(vector<vector<Node>> &adjList, vector<int> &grades);
+
 
 int main(void){
 
-    string filename = "in2.txt";
-    
-    fstream in(filename);
-    int nodeAmount, edgeAmount, rootNode; // characteristic variables of graph
-    
-    in >> nodeAmount >> edgeAmount >> rootNode;
+    string filename = "bitacoraACT4_3.txt";
 
+    fstream in(filename);
+
+    int nodeAmount, edgeAmount;
+    in >> nodeAmount >> edgeAmount;
+    
     in.close();
 
-    // crear lista de adyacencia con nodeAmpount espacios.
-    vector<vector<Node<int>>> adjList(nodeAmount + 1); // lo hago +1 por si llega a existir un nodo 0.
+    vector<vector<Node>> adjList(nodeAmount);
 
     loadGraph(adjList, nodeAmount, edgeAmount, filename);
     
-    printList(adjList, nodeAmount);
-    
-    cout << "BFS: ";
-    BFS(adjList, rootNode);
-    
-    cout << "DFS: ";
-    
-    // set all nodes to not visited
-    for (unsigned int i = 0; i < adjList.size(); i++){
-        dfsVisited.push_back(false);   
-    }
+    cout << "Amount of IP addresses: " << adjList.size() << endl;
 
-    DFS(adjList, rootNode); 
-    
+    // vector que guarda los grados de todos los nodos
+    vector<int> grades(nodeAmount);
+
+    nodeGrades(adjList, grades);
+
+    cout << "\nTASK... DONE!\n";
+
 }
 
-void DFSVisit(vector<vector<Node<int>>> &adjList, vector<Node<int>>&adjNodes){
+void nodeGrades(vector<vector<Node>> &adjList, vector<int> &grades){
+  
+  int greatest = 0;
 
-    timeCounter = timeCounter + 1;
+  vector<int> top;
 
-    // itera sobre la lista que pasaste como parámetro
-    for (unsigned int i = 0; i < adjNodes.size(); i++){
+  int topVal = 0;
+
+  for (unsigned int currentNode = 0; currentNode < adjList.size(); currentNode++){
+    //cout << "pos: " << i << " es de grado " << adjList[i].size() - 1 << endl;
+    grades[currentNode] = adjList[currentNode].size() - 1;
     
-        // si el primer nodo de esa lista de adyacencia no ha sido visitado
-        if (dfsVisited[adjNodes[i].getDestination()] == false){
-            // imprime el nodo
-            cout << adjNodes[i].getDestination() << " ";
-
-            // marcalo como visitado
-            dfsVisited[adjNodes[i].getDestination()] = true;
-
-            // ahora ese nodo lo debes pasar para buscar el siguiente conectado a ese.
-            DFSVisit(adjList, adjList[adjNodes[i].getDestination()]);
-        } 
+    if (grades[currentNode] > topVal){
+      top.clear();
+      top.push_back(currentNode);
+      topVal = grades[currentNode];
+    } else if (grades[currentNode] == topVal){
+      top.push_back(currentNode);
+      
     }
 
-    return; 
+  }
+
+  cout << "\n--------------BOOT MASTERS--------------" << endl;
+
+  for (unsigned int i = 0; i < top.size(); i++){
+  cout << "IP: " << adjList[top[i]][0].getOrigin() << "..........";
+  cout << "Nodes to device: " << grades[top[i]] << endl;
+
+  }
+
 }
 
-void DFS(vector<vector<Node<int>>> &adjList, int rootNode){
-
-    timeCounter = 0;
-    
-    if (dfsVisited[adjList[rootNode][0].getOrigin()] == true){
-      return;
-    }
-
-    // imprime el primer nodo que visitaste
-    cout << adjList[rootNode][0].getOrigin() << " ";
-
-    for (unsigned int currentNode = rootNode; currentNode < adjList.size()-1; currentNode++){
-      //cout << currentNode << endl;
-            
-            // si no hemos visitado el nodo. Lo visitamos con DFS-Visit
-            // adjList[currentNode][0].getOrigin() -> 1
-        if (dfsVisited[adjList[currentNode][0].getOrigin()] == false){
-            
-            // ponemos el nodo fuente como ya visitado
-            dfsVisited[adjList[rootNode][0].getOrigin()] = true;
-
-            // pasamos la lista entera y la lista de adjacencia del currentNode 
-            DFSVisit(adjList, adjList[currentNode]);
-        }       
-    }
-    
-    // ponemos el nodo fuente como ya visitado
-    dfsVisited[adjList[rootNode][0].getOrigin()] = true;
-    
-    // edge case para casos donde no hay un nodo conectado
-    for (unsigned int i = 0; i < dfsVisited.size(); i++){
-        
-        // si no haz visitado ese nodo. Hazle dfs
-        if (dfsVisited[i] == false && adjList[i].size() != 0){
-            // hazle DFS a ese nodo
-            DFS(adjList, i);
-        }
-    }
-}
-
-void BFS(vector<vector<Node<int>>> &adjList, int rootNode){
-
-    queue<int> gray; // processed nodes
-    vector<bool> visited;
-    int currentNode;
-    
-    // set all nodes to not visited
-    for (unsigned int i = 0; i < adjList.size(); i++){
-        visited.push_back(false);    
-    }
-
-    // aqui se hace un push del nodo en el que estamos
-    gray.push(adjList[rootNode][0].getOrigin());
-    
-    // el nodo inicial lo marcas como visitado
-    visited[rootNode] = true;
-
-    while(!gray.empty()){
-
-        currentNode = gray.front();
-        gray.pop();
-
-        // OUTPUT
-        cout << currentNode;
-
-        for (unsigned int adjNode = 0; adjNode < adjList[currentNode].size(); adjNode++){
-
-            //cout << adjList[currentNode][adjNode].getDestination() << " ";
-            
-            // si ya está visitado ese nodo, pasa al siguiente.
-            if (visited[adjList[currentNode][adjNode].getDestination()] == true){
-                continue;
-                
-            } else {
-                // si no lo haz visitado. Marcalo como visitado
-                visited[adjList[currentNode][adjNode].getDestination()] = true;
-            }
-
-            // add nodes attached to currentNode
-            gray.push(adjList[currentNode][adjNode].getDestination());
-
-        }
-        cout << " ";   
-    }
-    cout << endl;
-}
-
-
-void loadGraph(vector<vector<Node<int>>> &adjList, int nodeAmount, int edgeAmount, string filename){
+void loadGraph(vector<vector<Node>> &adjList, int nodeAmount, int edgeAmount ,string filename){
 
     fstream in(filename);
 
-    int pointA, pointB, edgeWeight;
+    string ip;
+    int position;
 
-    // we read input to ignore first line.
-    in >> pointA >> pointB >> edgeWeight;
+    // salto basura
+    in >> position;
+    in >> position;
 
-    string s;
-    // here we start from one bc we want to ignore the 0 index that is empty, but this will not
-    // always be the case.
-    for (int i = 0; i < edgeAmount; i++){
+
+    // ponemos en el vector 'base' cada uno de los nodos existentes. Actualmente no tienen destinos
+    for (int i = 0; i < nodeAmount; i++){
         
-        in >> pointA >> pointB >> edgeWeight;
-
-        adjList[pointA].push_back(Node<int>(pointA, pointB, edgeWeight));
-
-        // PREGUNTALE AL PROFE SI ESTO ESTÁ BIEN.
-        /* EN TEORÍA ES UN GRAFO NO DIRIGIDO, POR LO QUE LOS NODOS PUEDEN INTERCONECTARSE POR ESO
-        LA LÍNEA  DEBAJO ES VÁLIDA*/
-        //adjList[pointB].push_back(Node<int>(pointB, pointA, edgeWeight));
+        in >> ip;
+        position = i;
+        adjList[i].push_back(Node(ip, position));
+        
     }
+
+    // ======================= LLENADO DE ADJLIST ==============================
+
+    string s, ipOriginS, ipDestinationS;
+    
+    int ipFirstPart = 0;
+    int currentNode; // pivote de a lista de nodos
+    int ipOriginI, ipDestinationI;
+
+    int trimObjetivo;
+
+    in.ignore();
+    
+
+    
+
+    for (int i = 0; i < edgeAmount; i++){
+      
+        // leemos todo el renglón
+        getline(in, s);   
+
+        ipOriginS = obtenerIpOrigen(s);
+        ipDestinationS = obtenerIpDestino(s);
+      
+        ipOriginI = conseguirPeso(ipOriginS);
+        ipDestinationI =conseguirPeso(ipDestinationS);
+
+        // binary search de la ip de origen. Regresar ubicación aproximada de la IP a encontrar
+        // encontrar esa ubicación aproximada
+        currentNode = busqBinaria(adjList, 0, adjList.size(), ipOriginI);
+
+        // consigo primer0s 3 dígitos de la IP que busco en int
+        trimObjetivo = stoi(adjList[currentNode][0].getOrigin().substr(0, adjList[currentNode][0].getOrigin().find('.')));
+
+      // hay que hacer un caso especial cuando el index aproximado es 1
+      if (trimObjetivo == 1){
+        //cout << "esto hay en ubicación adjList[0]" << adjList[0][0].getOrigin() << endl;
+
+        // vete al primer elemento DIRECTO y de ahí busca secuencial
+        currentNode = 0;
+        //cout << adjList[0][0].getOrigin() << endl;
+      } else{
+
+          while (ipOriginI <= trimObjetivo){
+
+            // ve descendiendo en esa sección de las IPs
+            currentNode = currentNode - 1;
+
+            // ve actualizando trim objetivo
+            trimObjetivo = stoi(adjList[currentNode][0].getOrigin().substr(0, adjList[currentNode][0].getOrigin().find('.')));
+
+          }
+
+        // suma uno para estar en el primero de esa sección de IPs. y no pasarte
+        currentNode = currentNode + 1;
+      }
+        
+        // hacer búsqueda secuencial en esa sección de ips
+      
+        while (ipOriginS != adjList[currentNode][0].getOrigin()){
+
+        // checa hacia arriba          
+        currentNode = currentNode + 1;
+
+        }
+  
+        // hacer el insert en el nodo
+        adjList[currentNode].push_back(Node(ipOriginS, ipDestinationS, currentNode));
+
+    }
+  cout << "Graph successfully loaded\n" << endl;
 }
 
-void printList(vector<vector<Node<int>>> &adjList, int nodeAmount){
+int busqBinaria(vector<vector<Node>> &adjList, int min, int max, int num)
+{
 
-    for (unsigned int i = 0; i < adjList.size(); i++){
+    // Regresa el index de un elemento de un arreglo ordenado. Se busca de manera recursiva.
 
-        // don't print non-existing nodes.
-        if (adjList[i].size() == 0){
-            continue;
+    if (max >= min)
+    {
+        int key = (min + max) / 2;
+
+        if (num == stoi(adjList[key][0].getOrigin().substr(0,adjList[key][0].getOrigin().find('.'))))
+        {
+            return key;
         }
 
-        cout << "[" << i << "]" << "--> ";
-        for (unsigned int j = 0; j < adjList[i].size(); j++){
-            cout << adjList[i][j].getDestination() << "|" << adjList[i][j].getWeight() << "--> ";
+        else if (num <= stoi(adjList[key][0].getOrigin().substr(0,adjList[key][0].getOrigin().find('.'))))
+        {
+            max = key - 1;
+
+            return busqBinaria(adjList, min, max, num);
         }
-        cout << "END" << endl;
+
+        else if (num >= stoi(adjList[key][0].getOrigin().substr(0,adjList[key][0].getOrigin().find('.'))))
+        {
+            min = key + 1;
+            return busqBinaria(adjList, min, max, num);
+        }
     }
+    return -1; //no se encontró valor
+}
+
+/* En esta función el arreglo ya debe de venir sorteado. */
+
+
+string obtenerIpOrigen(string s){
+
+  int firstSpace = s.find(' ');
+  int secondSpace = s.find(' ', firstSpace + 1);
+  int thirdSpace = s.find(' ', secondSpace + 1);
+
+  // Guardamos de donde comienza la IP hasta el final del string
+    s = s.substr(thirdSpace+1);
+
+    // Ahora solo conseguimos la IP son contar el puerto.
+    s = s.substr(0, s.find(":"));
+
+    // Regresamos la pura IP 
+    return s;
+  
+}
+
+string obtenerIpDestino(string s){
+
+  int firstSpace = s.find(' ');
+  int secondSpace = s.find(' ', firstSpace + 1);
+  int thirdSpace = s.find(' ', secondSpace + 1);
+  int fourthSpace = s.find(' ', thirdSpace + 1);
+  
+  // Guardamos de donde comienza la IP hasta el final del string
+    s = s.substr(fourthSpace+1);
+
+  // Ahora solo conseguimos la IP son contar el puerto.
+    s = s.substr(0, s.find(":"));
+
+    // Regresamos la pura IP 
+    return s;
+  
+}
+
+int conseguirPeso(string s){
+  string sub = s.substr(0, s.find("."));
+  int peso = stoi(sub);
+  return peso;
 }

@@ -1,39 +1,62 @@
-template<class T>
+using namespace std;
+
 class Node{
 
     private:
 
-        T origin;
-        T destination;
-        T weight;
+        string origin;
+        string destination;
+        int index;
 
     public:
 
         Node(){
-            this->origin = 0;
-            this->destination = 0;
-            this->weight = 0;
+            this->origin = "none";
+            this->destination = "none";
+            this->index = 0;
         }
 
-        Node(T origin, T destination, T weight){
+        Node(string origin, string destination){
             this->origin = origin;
             this->destination = destination;
-            this->weight = weight;
+            this->index = 0;
+        }
+
+        Node(string origin, int index){
+            this->origin = origin;
+            this->destination = origin; // es el primer nodo entonces su destino será su origen nhp.
+            this->index = index;
+        }
+
+        Node(string origin, string destination, int index){
+            this->origin = origin;
+            this->destination = destination;
+            this->index = index;
 
         }
 
-        T getOrigin(){
+        string getOrigin(){
             return origin;
         }
 
-        T getDestination(){
+        string getDestination(){
             return destination;
         }
 
-        T getWeight(){
-            return weight;
+        int getIndex(){
+            return index;
         }
 
-        // podemos agregar los setters pero por el momento creo que no son necesarios.
+        void setOrigin(string origin){
+            this->origin = origin;
+        }
+
+        void setDestination(string destination){
+            this->destination = destination;
+        }
+
+        void setIndex(int index){
+            this->index = index;
+        }
 
 };
