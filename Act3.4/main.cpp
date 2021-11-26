@@ -12,7 +12,7 @@ void print5greatest(vector<Entry> &list);
 string clearEntry(string s);
 
 int main() {
-  
+
     // vector con objetos. Cada objeto contiene su IP y su número de accesos.
     vector<Entry> list;
     BST tree;
@@ -24,7 +24,7 @@ int main() {
     for (unsigned int i = 0; i < list.size(); i++){
         tree.insert(list[i].getIP(), list[i].getNumAccesos());
     }
-    
+
     cout << "Altura del arbol: " << tree.height() << endl;
 
     cout << "Top 5 IPs con mas accesos" << endl;
@@ -39,16 +39,16 @@ void readFile(vector<Entry> &list, string filename){
     bool newIP;
 
     while(getline(in, IP)){
-        
+
         newIP = true;
 
         // Obtenemos la pura IP de toda la línea
         IP = clearEntry(IP);
-    
+
         for (unsigned int i = 0; i < list.size(); i++){
 
             if (IP.compare(list[i].getIP()) == 0){
-                
+
                 list[i].increaseNumAccesos();
 
                 // Si ya se hizo match con alguna IP, se para el programa y no se crea un nuevo entry para agregar a la lista.
@@ -78,14 +78,14 @@ string clearEntry(string s){
     //cout << "Espacio 2 should be 5:" << secondSpace << endl;
     thirdSpace = s.find(' ', secondSpace + 1);
     //cout << "Espacio 3 "<< thirdSpace << endl;
-    
+
     // Guardamos de donde comienza la IP hasta el final del string
     s = s.substr(thirdSpace+1);
 
     // Ahora solo conseguimos la IP son contar el puerto.
     s = s.substr(0, s.find(":"));
 
-    // Regresamos la pura IP 
+    // Regresamos la pura IP
     return s;
 
 }

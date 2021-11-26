@@ -25,13 +25,13 @@ int main(void){
 
     int nodeAmount, edgeAmount;
     in >> nodeAmount >> edgeAmount;
-    
+
     in.close();
 
     vector<vector<Node>> adjList(nodeAmount);
 
     loadGraph(adjList, nodeAmount, edgeAmount, filename);
-    
+
     cout << "Amount of IP addresses: " << adjList.size() << endl;
 
     // vector que guarda los grados de todos los nodos
@@ -44,7 +44,7 @@ int main(void){
 }
 
 void nodeGrades(vector<vector<Node>> &adjList, vector<int> &grades){
-  
+
   int greatest = 0;
 
   vector<int> top;
@@ -54,14 +54,14 @@ void nodeGrades(vector<vector<Node>> &adjList, vector<int> &grades){
   for (unsigned int currentNode = 0; currentNode < adjList.size(); currentNode++){
     //cout << "pos: " << i << " es de grado " << adjList[i].size() - 1 << endl;
     grades[currentNode] = adjList[currentNode].size() - 1;
-    
+
     if (grades[currentNode] > topVal){
       top.clear();
       top.push_back(currentNode);
       topVal = grades[currentNode];
     } else if (grades[currentNode] == topVal){
       top.push_back(currentNode);
-      
+
     }
 
   }
@@ -90,17 +90,17 @@ void loadGraph(vector<vector<Node>> &adjList, int nodeAmount, int edgeAmount ,st
 
     // ponemos en el vector 'base' cada uno de los nodos existentes. Actualmente no tienen destinos
     for (int i = 0; i < nodeAmount; i++){
-        
+
         in >> ip;
         position = i;
         adjList[i].push_back(Node(ip, position));
-        
+
     }
 
     // ======================= LLENADO DE ADJLIST ==============================
 
     string s, ipOriginS, ipDestinationS;
-    
+
     int ipFirstPart = 0;
     int currentNode; // pivote de a lista de nodos
     int ipOriginI, ipDestinationI;
@@ -108,18 +108,18 @@ void loadGraph(vector<vector<Node>> &adjList, int nodeAmount, int edgeAmount ,st
     int trimObjetivo;
 
     in.ignore();
-    
 
-    
+
+
 
     for (int i = 0; i < edgeAmount; i++){
-      
+
         // leemos todo el renglón
-        getline(in, s);   
+        getline(in, s);
 
         ipOriginS = obtenerIpOrigen(s);
         ipDestinationS = obtenerIpDestino(s);
-      
+
         ipOriginI = conseguirPeso(ipOriginS);
         ipDestinationI =conseguirPeso(ipDestinationS);
 
@@ -152,16 +152,16 @@ void loadGraph(vector<vector<Node>> &adjList, int nodeAmount, int edgeAmount ,st
         // suma uno para estar en el primero de esa sección de IPs. y no pasarte
         currentNode = currentNode + 1;
       }
-        
+
         // hacer búsqueda secuencial en esa sección de ips
-      
+
         while (ipOriginS != adjList[currentNode][0].getOrigin()){
 
-        // checa hacia arriba          
+        // checa hacia arriba
         currentNode = currentNode + 1;
 
         }
-  
+
         // hacer el insert en el nodo
         adjList[currentNode].push_back(Node(ipOriginS, ipDestinationS, currentNode));
 
@@ -214,9 +214,9 @@ string obtenerIpOrigen(string s){
     // Ahora solo conseguimos la IP son contar el puerto.
     s = s.substr(0, s.find(":"));
 
-    // Regresamos la pura IP 
+    // Regresamos la pura IP
     return s;
-  
+
 }
 
 string obtenerIpDestino(string s){
@@ -225,16 +225,16 @@ string obtenerIpDestino(string s){
   int secondSpace = s.find(' ', firstSpace + 1);
   int thirdSpace = s.find(' ', secondSpace + 1);
   int fourthSpace = s.find(' ', thirdSpace + 1);
-  
+
   // Guardamos de donde comienza la IP hasta el final del string
     s = s.substr(fourthSpace+1);
 
   // Ahora solo conseguimos la IP son contar el puerto.
     s = s.substr(0, s.find(":"));
 
-    // Regresamos la pura IP 
+    // Regresamos la pura IP
     return s;
-  
+
 }
 
 int conseguirPeso(string s){
